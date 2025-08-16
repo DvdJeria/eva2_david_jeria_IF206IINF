@@ -1,0 +1,7 @@
+{
+  "name": "mi-lista-tareas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

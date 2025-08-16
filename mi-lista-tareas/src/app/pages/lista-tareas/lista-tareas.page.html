@@ -1,0 +1,120 @@
+<!--Esta es el original-->>
+
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mi Proyecto</ion-title>
+  </ion-toolbar>
+  <ion-segment [(ngModel)]="segmentoSeleccionado">
+    <ion-segment-button value="tareas">
+      <ion-label>Tareas</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="cocteles">
+      <ion-label>Cócteles</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (segmentoSeleccionado === 'tareas') {
+  <ion-list class="form-list">
+    <ion-item>
+      <ion-input [(ngModel)]="nuevaTarea.titulo" placeholder="Título de la tarea"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input [(ngModel)]="nuevaTarea.descripcion" placeholder="Descripción de la tarea"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button expand="block" (click)="agregarTarea()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Agregar Tarea
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-button expand="block" (click)="tomarFoto()">
+        <ion-icon name="camera-outline" slot="start"></ion-icon>
+        Capturar Imagen
+      </ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label></ion-label>
+      <ion-button slot="start" expand="block" (click)="obtenerUbicacion()" [disabled]="obteniendoUbicacion">
+        <ion-icon name="location-outline" slot="start"></ion-icon>
+        @if (obteniendoUbicacion) {
+        <span>Obteniendo...</span>
+        }Obtener ubicación
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  @if (ubicacionActual) {
+  <div class="gps-info">
+    <p><strong>Latitud: </strong> {{ ubicacionActual.coords.latitude }}</p>
+    <p><strong>Longitud: </strong> {{ ubicacionActual.coords.longitude }}</p>
+    <p><strong>Precisión: </strong> {{ ubicacionActual.coords.accuracy }} metros</p>
+    <p><strong>Timestamp: </strong> {{ ubicacionActual.timestamp | date:'short'}}</p>
+  </div>
+  }
+
+  <ion-list class="task-list">
+    <ion-list-header>
+      <ion-label>Lista de Tareas</ion-label>
+    </ion-list-header>
+    @for (tarea of tareas; track tarea.id) {
+    <ion-item>
+      <ion-label>
+        <h3>{{ tarea.titulo }}</h3>
+        <p>{{ tarea.descripcion }}</p>
+      </ion-label>
+      <ion-button fill="clear" color="danger" slot="end" (click)="eliminarTarea(tarea.id)">
+        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    }
+    @empty {
+    <ion-item>
+      <ion-label class="ion-text-center">No hay tareas para mostrar.</ion-label>
+    </ion-item>
+    }
+  </ion-list>
+  }
+
+  <ion-item-divider></ion-item-divider>
+  <div *ngIf="imagenesCapturadas.length > 0">
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Imágenes Capturadas</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let foto of imagenesCapturadas">
+        <img [src]="foto" alt="Imagen capturada" style="width: 200px; height: auto; border-radius: 8px;" />
+      </ion-item>
+    </ion-list>
+  </div>
+
+  @if (segmentoSeleccionado === 'cocteles') {
+  <ion-list class="cocktail-list">
+    <ion-list-header>
+      <ion-label>Cócteles Populares</ion-label>
+      @if (cargandoCocteles) {
+      <ion-spinner name="crescent"></ion-spinner>
+      }
+    </ion-list-header>
+    @for (coctel of cocteles; track coctel.idDrink) {
+    <ion-item>
+      <ion-card>
+        <ion-card-title>{{ coctel.strDrink }}</ion-card-title>
+        <img [src]="coctel.strDrinkThumb" alt="{{ coctel.strDrink }}" style="width: 200px; height: auto;" />
+        <ion-card-header>
+          <ion-card-subtitle>ID: {{ coctel.idDrink }}</ion-card-subtitle>
+        </ion-card-header>
+      </ion-card>
+    </ion-item>
+    }
+    @empty {
+    <ion-item>
+      <ion-label class="ion-text-center">No hay cócteles para mostrar.</ion-label>
+    </ion-item>
+    }
+  </ion-list>
+  }
+</ion-content>
